@@ -12,6 +12,7 @@ jobs:
     vmImage: "ubuntu-16.04"
 
   steps:
+
   - task: Maven@3
     inputs:
       mavenPomFile: 'pom.xml'
@@ -42,4 +43,10 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - script: echo my first deployment
+        - task: AzureWebApp@1
+          inputs:
+              azureSubscription: 'Visual Studio Ultimate with MSDN(dc66f1aa-84ab-4e68-972f-cc6d6dd4a471)'
+              appType: 'webAppLinux'
+              appName: 'idkwtf2'
+              package: '$(System.DefaultWorkingDirectory)/**/*.war'
+              runtimeStack: 'JAVA|8-jre8'
