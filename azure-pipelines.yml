@@ -31,22 +31,11 @@ jobs:
       reportDirectory: '$(System.DefaultWorkingDirectory)/**/site/jacoco'
       failIfCoverageEmpty: true
 
-  # track deployments on the environment
-- deployment: DeployWeb
-  displayName: deploy Web App
-  pool:
-    vmImage: 'Ubuntu-16.04'
-  # creates an environment if it doesn't exist
-  environment: 'smarthotel-dev'
-  strategy:
-    # default deployment strategy, more coming...
-    runOnce:
-      deploy:
-        steps:
-        - task: AzureWebApp@1
-          inputs:
-              azureSubscription: 'Visual Studio Ultimate with MSDN(dc66f1aa-84ab-4e68-972f-cc6d6dd4a471)'
-              appType: 'webAppLinux'
-              appName: 'idkwtf2'
-              package: '$(System.DefaultWorkingDirectory)/**/*.war'
-              runtimeStack: 'JAVA|8-jre8'
+  - task: AzureWebApp@1
+    inputs:
+        azureSubscription: 'Visual Studio Ultimate with MSDN(dc66f1aa-84ab-4e68-972f-cc6d6dd4a471)'
+        appType: 'webAppLinux'
+        appName: 'idkwtf2'
+        package: '$(System.DefaultWorkingDirectory)/**/*.war'
+        runtimeStack: 'JAVA|8-jre8'
+
