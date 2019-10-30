@@ -19,21 +19,38 @@ strategy:
 pool:
   vmImage: $(imageName)
 
-steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+jobs:
+- job: Build
 
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: 'JaCoCo'
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/**/site/jacoco'
-    failIfCoverageEmpty: true
+  steps:
+  - task: Maven@3
+    inputs:
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.8'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      goals: 'package'
+
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: 'JaCoCo'
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml'
+      reportDirectory: '$(System.DefaultWorkingDirectory)/**/site/jacoco'
+      failIfCoverageEmpty: true
+
+  # track deployments on the environment
+- deployment: DeployWeb
+  displayName: deploy Web App
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  # creates an environment if it doesn't exist
+  environment: 'smarthotel-dev'
+  strategy:
+    # default deployment strategy, more coming...
+    runOnce:
+      deploy:
+        steps:
+        - script: echo my first deployment
